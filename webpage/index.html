@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<base target="_top">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<title>Campsite Map</title>
+	
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+
+	<!--my CSS -->
+	<link href="css/campsite.css" rel="stylesheet">
+
+	<!--load all Font Awesome styles -->
+	<link href="fontawesome-free-5.15.4/css/all.css" rel="stylesheet">
+
+	<!--Leaflet-->
+	<link rel="stylesheet" href="leaflet/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="/>
+    <script src="leaflet/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="></script>
+
+	<!--Leaflet.extra-markers -->
+	<link rel="stylesheet" href="Leaflet.ExtraMarkers/css/leaflet.extra-markers.min.css">
+	<script src="Leaflet.ExtraMarkers/js/leaflet.extra-markers.min.js"></script>
+
+	<!--leaflet-ajax -->
+	<script src="leaflet-ajax/leaflet.ajax.min.js"></script>
+
+	<style>
+		html, body {
+			height: 100%;
+			margin: 0;
+		}
+		.leaflet-container {
+			height: 400px;
+			width: 600px;
+			max-width: 100%;
+			max-height: 100%;
+		}
+	</style>
+
+	
+</head>
+<body>
+<div id="map" style="width: 100%; height: 100%;"></div>
+
+
+<script>
+/*
+ * Marker definitions.
+ */
+var TentMarker = L.ExtraMarkers.icon({
+	icon: 'fa-campground',
+	markerColor: 'blue',
+	shape: 'circle',
+	prefix: 'fa'
+});
+
+var HouseMarker = L.ExtraMarkers.icon({
+	icon: 'fa-home',
+	markerColor: 'blue',
+	shape: 'circle',
+	prefix: 'fa'
+});
+
+var CampsiteHouseMarker = L.ExtraMarkers.icon({
+	icon: 'fa-campground-home',
+	markerColor: 'blue',
+	shape: 'circle',
+	prefix: 'fa'
+});
+
+/*
+ * Layer definitions.
+ */
+var osmMapnik = new L.TileLayer(
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    {
+        minZoom: 3,
+        maxZoom: 20,
+        maxNativeZoom: 19,
+        attribution: 'Map data © OpenStreetMap contributors'
+    }
+);
+
+var osmOpenTopoMap = new L.TileLayer(
+    'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+    {
+        minZoom: 3,
+        maxZoom: 20,
+        maxNativeZoom: 17,
+        attribution: 'Kartendaten: &copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende, <a href="http://viewfinderpanoramas.org">SRTM</a> | Kartendarstellung: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+    }
+);
+
+var googleMaps = new L.TileLayer(
+    'https://mt.google.com/vt?&x={x}&y={y}&z={z}',
+    {
+        attribution: "<a href=\'http://maps.google.com/\'>Google</a> Maps",
+        subdomains: "1234",
+        tileSize: 256,
+        minZoom: 3,
+        maxZoom: 20,
+        maxNativeZoom: 20
+    }
+);
+
+var googleSatellite = new L.TileLayer(
+    'https://mt.google.com/vt?lyrs=s&x={x}&y={y}&z={z}',
+    {
+        attribution:"<a href=\'http://maps.google.com/\'>Google</a> Maps Satellite",
+        subdomains:"1234",
+        tileSize:256,
+        minZoom:3,
+        maxZoom: 20,
+        maxNativeZoom:20
+    }
+);
+
+var googleHybrid = new L.TileLayer(
+    'https://mt.google.com/vt?lyrs=y&x={x}&y={y}&z={z}',
+    {
+        attribution:"<a href=\'http://maps.google.com/\'>Google</a> Maps Satellite",
+        subdomains:"1234",
+        tileSize:256,
+        minZoom:3,
+        maxZoom: 20,
+        maxNativeZoom:20
+    }
+);
+
+/*
+ * GeoJSON Layer with only campsites
+ */
+var campsites = new L.GeoJSON.AJAX(["geojsonFeatures.json"],{
+	filter: function(feature, layer) {
+		return Object.values(feature.properties.category).includes("campsite");
+    },
+	pointToLayer: function (feature, latlng) {
+	if(Object.values(feature.properties.category).includes("campsite") && Object.values(feature.properties.category).includes("house"))
+	{
+		return L.marker(latlng, {icon: CampsiteHouseMarker});
+	}
+	return L.marker(latlng, {icon: TentMarker});
+	},
+	onEachFeature: function (feature, layer) {
+		return layer.bindPopup("<b>" + feature.properties.name + '</b></br> <a href="'+ feature.properties.url +'" target="_blank">'+ feature.properties.url + "</a>");
+	}
+})
+
+/*
+ * GeoJSON Layer with only houses
+ */
+var houses  = new L.GeoJSON.AJAX(["geojsonFeatures.json"],{
+	filter: function(feature, layer) {
+		return Object.values(feature.properties.category).includes("house");
+    },
+	pointToLayer: function (feature, latlng) {
+		if(Object.values(feature.properties.category).includes("campsite") && Object.values(feature.properties.category).includes("house"))
+		{
+			return L.marker(latlng, {icon: CampsiteHouseMarker});
+		}
+		return L.marker(latlng, {icon: HouseMarker});
+	},
+	onEachFeature: function (feature, layer) {
+		return layer.bindPopup("<b>" + feature.properties.name + '</b></br> <a href="'+ feature.properties.url +'" target="_blank">'+ feature.properties.url + "</a>");
+	}
+})
+
+/*
+ * Collect base and overlay layers
+ */
+var baseLayers = {
+    "OpenStreetMap": osmMapnik,
+    "OpenTopoMap": osmOpenTopoMap,
+    "Google Maps": googleMaps,
+    "Google Maps Satellite": googleSatellite,
+    "Google Maps Hybrid": googleHybrid,
+};
+
+var overlayLayers = {
+    "Zeltplätze": campsites,
+	"Häuser": houses
+};
+
+/*
+ * Configure Map. Center is Goettingen
+ */
+const map = L.map('map').setView([51.54208657329163, 9.933654097449612], 6);
+
+const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	maxZoom: 19,
+	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+}).addTo(map);
+
+/*
+ * Add both layer as default
+ */
+map.addLayer(campsites);
+map.addLayer(houses);
+
+
+/*
+ * Layer selector with base and overlay layers.
+ */
+let layercontrol = L.control.layers(baseLayers, overlayLayers).addTo(map);
+
+/*
+ * A nice scale in the bottom left corner.
+ */
+L.control.scale().addTo(map);
+
+</script>
+
+</body>
+</html>
