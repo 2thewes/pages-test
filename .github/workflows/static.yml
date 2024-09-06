@@ -50,6 +50,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: geojsonFeatures
+      - name: Move geojsonFeatures.json
+        run: mv geojsonFeatures.json webpage/geojsonFeatures.json
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
@@ -57,7 +59,6 @@ jobs:
         with:
           # Upload entire repository
           path: 'webpage/*'
-          path: 'geojsonFeatures.json'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
