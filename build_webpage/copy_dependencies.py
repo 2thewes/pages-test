@@ -16,16 +16,9 @@ shutil.copytree(
 
 # Fontawesome
 shutil.copytree(
-    "node_modules/@fortawesome/fontawesome-free/css/",
-    "webpage/fontawesome/",
+    "node_modules/@fortawesome/fontawesome-free/css/", "webpage/fontawesome/css/"
 )
 
 # Assests
-shutil.copy2(
-    "build_webpage/index.html",
-    "webpage/index.html",
-)
-shutil.copy2(
-    "build_webpage/campsites.css",
-    "webpage/campsites.css",
-)
+shutil.copy2("build_webpage/index.html", "webpage/index.html")
+shutil.copy2("build_webpage/campsites.css", "webpage/campsites.css")
