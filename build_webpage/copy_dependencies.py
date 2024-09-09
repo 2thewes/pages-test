@@ -22,10 +22,10 @@ shutil.copytree(
 
 # Assests
 shutil.copy2(
-    "build/index.html",
+    "build_webpage/index.html",
     "webpage/index.html",
 )
 shutil.copy2(
-    "build/campsites.css",
+    "build_webpage/campsites.css",
     "webpage/campsites.css",
 )
