@@ -36,8 +36,8 @@ jobs:
         uses: actions/setup-python@v4
       - name: execute copy_dependencies.py
         run: python build_webpage/copy_dependencies.py
-      - name: execute build_webpage/csv2geojson.py
-        run: python csv2geojson.py
+      - name: execute csv2geojson.py
+        run: python build_webpage/csv2geojson.py
       - name: Move geojsonFeatures.json
         run: mv geojsonFeatures.json webpage/geojsonFeatures.json
       - uses: actions/upload-artifact@v4
