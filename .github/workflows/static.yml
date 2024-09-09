@@ -31,7 +31,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           cache: 'npm'
-      - run: npm install build/
+      - run: npm install
       - name: setup python
         uses: actions/setup-python@v4
       - name: execute copy_dependencies.py
