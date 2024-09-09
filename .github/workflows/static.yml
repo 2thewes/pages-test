@@ -46,12 +46,14 @@ jobs:
           path: webpage/
           if-no-files-found: error
           compression-level: 0
-  # Single deploy job since we're just deploying
+  
+
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    needs: [build]
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v4
