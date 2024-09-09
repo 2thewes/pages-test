@@ -27,14 +27,23 @@ jobs:
     steps:
       - name: checkout repo content
         uses: actions/checkout@v4 # checkout the repository content
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: 'npm'
+      - run: npm install build/
       - name: setup python
         uses: actions/setup-python@v4
+      - name: execute copy_dependencies.py
+        run: python copy_dependencies.py
       - name: execute csv2geojson.py
         run: python csv2geojson.py
+      - name: Move geojsonFeatures.json
+        run: mv geojsonFeatures.json webpage/geojsonFeatures.json
       - uses: actions/upload-artifact@v4
         with:
-          name: geojsonFeatures
-          path: geojsonFeatures.json
+          name: build
+          path: webpage/
           if-no-files-found: error
           compression-level: 0
   # Single deploy job since we're just deploying
@@ -44,14 +53,10 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: geojsonFeatures
-      - name: Move geojsonFeatures.json
-        run: mv geojsonFeatures.json webpage/geojsonFeatures.json
+          name: build
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
