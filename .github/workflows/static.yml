@@ -26,14 +26,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout repo content
-        uses: actions/checkout@v4 # checkout the repository content
+        uses: actions/checkout@v4 #
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           cache: 'npm'
       - run: npm install
       - name: setup python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
       - name: execute copy_dependencies.py
         run: python build_webpage/copy_dependencies.py
       - name: execute csv2geojson.py
@@ -61,11 +61,9 @@ jobs:
           name: build
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - run: ls
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
           path: '.'
       - name: Deploy to GitHub Pages
         id: deployment
