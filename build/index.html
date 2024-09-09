@@ -10,18 +10,18 @@
 	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 
 	<!--my CSS -->
-	<link href="css/campsite.css" rel="stylesheet">
+	<link href="css/campsites.css" rel="stylesheet">
 
 	<!--load all Font Awesome styles -->
-	<link href="fontawesome-free-5.15.4/css/all.css" rel="stylesheet">
+	<link href="fontawesome-free-5.15.4/css/all.min.css" rel="stylesheet">
 
-	<!--Leaflet-->
-	<link rel="stylesheet" href="leaflet/leaflet.css" integrity="sha256-SmNGWusqL/quKm2d54JB3Czw54vO38NvLHGMNImsOLM="/>
-    <script src="leaflet/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="></script>
+	<!--Leaflet integrity="sha256-SmNGWusqL/quKm2d54JB3Czw54vO38NvLHGMNImsOLM=" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="-->
+	<link rel="stylesheet" href="leaflet/leaflet.css" />
+    <script src="leaflet/leaflet.js" ></script>
 
 	<!--Leaflet.extra-markers -->
-	<link rel="stylesheet" href="Leaflet.ExtraMarkers/css/leaflet.extra-markers.min.css">
-	<script src="Leaflet.ExtraMarkers/js/leaflet.extra-markers.min.js"></script>
+	<link rel="stylesheet" href="leaflet-extra-markers/css/leaflet.extra-markers.min.css">
+	<script src="leaflet-extra-markers/js/leaflet.extra-markers.min.js"></script>
 
 	<!--leaflet-ajax -->
 	<script src="leaflet-ajax/leaflet.ajax.min.js"></script>
@@ -93,42 +93,6 @@ var osmOpenTopoMap = new L.TileLayer(
     }
 );
 
-var googleMaps = new L.TileLayer(
-    'https://mt.google.com/vt?&x={x}&y={y}&z={z}',
-    {
-        attribution: "<a href=\'http://maps.google.com/\'>Google</a> Maps",
-        subdomains: "1234",
-        tileSize: 256,
-        minZoom: 3,
-        maxZoom: 20,
-        maxNativeZoom: 20
-    }
-);
-
-var googleSatellite = new L.TileLayer(
-    'https://mt.google.com/vt?lyrs=s&x={x}&y={y}&z={z}',
-    {
-        attribution:"<a href=\'http://maps.google.com/\'>Google</a> Maps Satellite",
-        subdomains:"1234",
-        tileSize:256,
-        minZoom:3,
-        maxZoom: 20,
-        maxNativeZoom:20
-    }
-);
-
-var googleHybrid = new L.TileLayer(
-    'https://mt.google.com/vt?lyrs=y&x={x}&y={y}&z={z}',
-    {
-        attribution:"<a href=\'http://maps.google.com/\'>Google</a> Maps Satellite",
-        subdomains:"1234",
-        tileSize:256,
-        minZoom:3,
-        maxZoom: 20,
-        maxNativeZoom:20
-    }
-);
-
 /*
  * GeoJSON Layer with only campsites
  */
@@ -173,9 +137,6 @@ var houses  = new L.GeoJSON.AJAX(["geojsonFeatures.json"],{
 var baseLayers = {
     "OpenStreetMap": osmMapnik,
     "OpenTopoMap": osmOpenTopoMap,
-    "Google Maps": googleMaps,
-    "Google Maps Satellite": googleSatellite,
-    "Google Maps Hybrid": googleHybrid,
 };
 
 var overlayLayers = {
@@ -184,9 +145,9 @@ var overlayLayers = {
 };
 
 /*
- * Configure Map. Center is Goettingen
+ * Configure Map. Center is 51°09'48.1"N 10°26'51.7"E 51.163361, 10.447683
  */
-const map = L.map('map').setView([51.54208657329163, 9.933654097449612], 6);
+const map = L.map('map').setView([51.163361, 10.447683], 6);
 
 const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 	maxZoom: 19,
