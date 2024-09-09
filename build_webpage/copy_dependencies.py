@@ -18,6 +18,10 @@ shutil.copytree(
 shutil.copytree(
     "node_modules/@fortawesome/fontawesome-free/css/", "webpage/fontawesome/css/"
 )
+shutil.copytree(
+    "node_modules/@fortawesome/fontawesome-free/webfonts/",
+    "webpage/fontawesome/webfonts/",
+)
 
 # Assests
 shutil.copy2("build_webpage/index.html", "webpage/index.html")
